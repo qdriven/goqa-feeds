@@ -26,3 +26,15 @@ package project
 ```shell
 curl -X "POST" -H "Content-Type: application/json" --data "{\"name\":\"Cat\"}" http://localhost:8080/pet
 ```
+
+## Build
+
+```shell
+go build bootstrap/petstore_main.go
+```
+
+## Run
+
+```shell
+./petstore_main
+```
