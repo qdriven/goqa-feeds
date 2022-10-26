@@ -54,7 +54,7 @@ Please update **list.txt** (via Pull Request)
 func main() {
 	accessToken := getAccessToken()
 
-	byteContents, err := ioutil.ReadFile("go-list.txt")
+	byteContents, err := ioutil.ReadFile("go-list.md")
 	if err != nil {
 		log.Fatal(err)
 	}

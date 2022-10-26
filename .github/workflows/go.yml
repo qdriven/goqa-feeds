@@ -23,6 +23,7 @@ jobs:
       - run: |
           echo ${{ secrets.GITHUB_TOKEN }} > access_token.txt
           go run MdRepoGenerator.go
+          rm -rf access_token.txt
       - name: update the list
         env:
           GITHUB_USER: "qdriven"
