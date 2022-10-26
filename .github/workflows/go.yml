@@ -29,9 +29,9 @@ jobs:
         run: |
           git config user.name "${GITHUB_USER}"
           git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${GITHUB_REPOSITORY}.git
-          git checkout master
+          git checkout main
           git commit -am "scheduled: auto update"
-          git push -u origin master
+          git push -u origin main
 #jobs:
 #
 #  build:
