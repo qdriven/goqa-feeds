@@ -2,19 +2,19 @@ package main
 
 import (
 	"context"
-	petstore "github.com/qdriven/go-for-qa/petstore"
+	"github.com/qdriven/go-for-qa/bootstrap/petstore"
 	"log"
 	"net/http"
 	"sync"
 )
 
 type petsService struct {
-	pets map[int64]petstore.Pet
+	pets map[int64]api.Pet
 	id   int64
 	mux  sync.Mutex
 }
 
-func (p *petsService) AddPet(ctx context.Context, req petstore.Pet) (petstore.Pet, error) {
+func (p *petsService) AddPet(ctx context.Context, req api.Pet) (api.Pet, error) {
 	p.mux.Lock()
 	defer p.mux.Unlock()
 
@@ -23,27 +23,27 @@ func (p *petsService) AddPet(ctx context.Context, req petstore.Pet) (petstore.Pe
 	return req, nil
 }
 
-func (p *petsService) DeletePet(ctx context.Context, params petstore.DeletePetParams) (petstore.DeletePetOK, error) {
+func (p *petsService) DeletePet(ctx context.Context, params api.DeletePetParams) (api.DeletePetOK, error) {
 	p.mux.Lock()
 	defer p.mux.Unlock()
 
 	delete(p.pets, params.PetId)
-	return petstore.DeletePetOK{}, nil
+	return api.DeletePetOK{}, nil
 }
 
-func (p *petsService) GetPetById(ctx context.Context, params petstore.GetPetByIdParams) (petstore.GetPetByIdRes, error) {
+func (p *petsService) GetPetById(ctx context.Context, params api.GetPetByIdParams) (api.GetPetByIdRes, error) {
 	p.mux.Lock()
 	defer p.mux.Unlock()
 
 	pet, ok := p.pets[params.PetId]
 	if !ok {
 		// Return Not Found.
-		return &petstore.GetPetByIdNotFound{}, nil
+		return &api.GetPetByIdNotFound{}, nil
 	}
 	return &pet, nil
 }
 
-func (p *petsService) UpdatePet(ctx context.Context, params petstore.UpdatePetParams) (petstore.UpdatePetOK, error) {
+func (p *petsService) UpdatePet(ctx context.Context, params api.UpdatePetParams) (api.UpdatePetOK, error) {
 	p.mux.Lock()
 	defer p.mux.Unlock()
 
@@ -54,16 +54,16 @@ func (p *petsService) UpdatePet(ctx context.Context, params petstore.UpdatePetPa
 	}
 	p.pets[params.PetId] = pet
 
-	return petstore.UpdatePetOK{}, nil
+	return api.UpdatePetOK{}, nil
 }
 
 func main() {
 	// Create service instance.
 	service := &petsService{
-		pets: map[int64]petstore.Pet{},
+		pets: map[int64]api.Pet{},
 	}
 	// Create generated server.
-	srv, err := petstore.NewServer(service)
+	srv, err := api.NewServer(service)
 	if err != nil {
 		log.Fatal(err)
 	}
