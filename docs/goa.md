@@ -13,6 +13,5 @@ go get google.golang.org/grpc/cmd/protoc-gen-go-grpc@latest
 ```shell
 goa gen goacalc/design
 goa example goacalc/design
-
 ```
 
