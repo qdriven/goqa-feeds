@@ -1,5 +1,0 @@
-repos:
-  - https://github.com/go-faster
-  - https://goa.design/
-templates:
-  -  https://github.com/chyroc/go-project-template.git
