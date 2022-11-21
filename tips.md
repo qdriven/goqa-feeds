@@ -1,1 +1,0 @@
-https://github.com/mingrammer/go-web-framework-stars.git
