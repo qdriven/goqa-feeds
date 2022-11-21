@@ -5,12 +5,13 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"github.com/qdriven/go-for-qa/pkg/gosh/api"
 	"io"
 	"io/ioutil"
 	"os"
 	"path"
 	"plugin"
-	"qfluent-go/pkg/gosh/api"
+
 	"regexp"
 	"strings"
 )
