@@ -26,7 +26,8 @@ func main() {
 		allRepos = append(allRepos, repos...)
 	}
 	sort.SliceStable(allRepos, func(i, j int) bool {
-		return *allRepos[i].Repository.StargazersCount > *allRepos[i].Repository.StargazersCount
+		return *allRepos[i].Repository.StargazersCount > 
+			*allRepos[i].Repository.StargazersCount
 	})
 	gh.SaveRanking(allRepos, "my-starred")
 	client.GetAllFollowing(0, 20)
