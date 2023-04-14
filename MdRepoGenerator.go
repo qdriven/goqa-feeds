@@ -12,7 +12,7 @@ import (
 func main() {
 	//starredLists := []string{"starred_repo.json", "starred_repo_15_40.json", "starred_repo_41_50.json"}
 	starredLists := []string{"starred_repo.json"}
-	client := gh.New()
+	client := gh.NewGithubClient()
 	client.GetAllStarredRepos(0, 60)
 	var allRepos []*github.StarredRepository
 	for i, list := range starredLists {
@@ -26,7 +26,7 @@ func main() {
 		allRepos = append(allRepos, repos...)
 	}
 	sort.SliceStable(allRepos, func(i, j int) bool {
-		return *allRepos[i].Repository.StargazersCount > 
+		return *allRepos[i].Repository.StargazersCount >
 			*allRepos[i].Repository.StargazersCount
 	})
 	gh.SaveRanking(allRepos, "my-starred")

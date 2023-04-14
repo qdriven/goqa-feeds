@@ -6,7 +6,7 @@ import (
 	"testing"
 )
 
-var ghClient = New()
+var ghClient = NewGithubClient()
 
 func TestGetAccessToken(t *testing.T) {
 	result := ghClient.GetAccessToken("access_token.txt")
@@ -22,8 +22,8 @@ func TestGetRepoStats(t *testing.T) {
 }
 
 func TestGetStarredRepos(t *testing.T) {
-	starred := ghClient.GetAllStarredRepos(41, 50)
-	print(starred)
+	starred := ghClient.GetAllStarredRepos(1, 2)
+	print(starred) //filter by topics and description
 }
 
 func TestGetFollowingUsers(t *testing.T) {

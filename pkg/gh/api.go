@@ -6,6 +6,7 @@ import (
 	"io/ioutil"
 	"log"
 	"strings"
+	"time"
 )
 
 type QGithub struct {
@@ -14,7 +15,7 @@ type QGithub struct {
 	accessToken string
 }
 
-func New() *QGithub {
+func NewGithubClient() *QGithub {
 	return &QGithub{
 		qClient:  github.NewClient(nil),
 		userName: "qdriven",
@@ -63,6 +64,19 @@ func (q *QGithub) GetAllStarredRepos(from, end int) []*github.StarredRepository 
 		result = append(result, starred...)
 		WriteStarredRepoToFile(result) // write as wait time
 		//append(result, starred...)
+		if len(starred) < 100 {
+			break
+		}
+	}
+	return result
+}
+
+func (q *QGithub) GetAllStarredRepositories(from, end int) []*github.StarredRepository {
+	var result []*github.StarredRepository
+	for i := from; i < end; i++ {
+		starred := q.GetStarredRepos(i)
+		time.Sleep(10)
+		result = append(result, starred...)
 		if len(starred) < 100 {
 			break
 		}

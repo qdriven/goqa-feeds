@@ -1,5 +1,4 @@
 # My Starred List
-# My Starred List
 QA Feeds to Fetch starred repo.
 
 ## Starred Repos:

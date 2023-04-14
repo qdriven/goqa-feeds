@@ -45,7 +45,7 @@ func SaveRanking(repos []*github.StarredRepository, topic string) {
 				desc = ""
 			}
 			_, err = readme.WriteString(fmt.Sprintf(
-				"| [%s](%s) | %d | %d | %d | %s |\n", *repo.Name, *repo.URL,
+				"| [%s](%s) | %d | %d | %d | %s |\n", *repo.Name, *repo.HTMLURL,
 				*repo.StargazersCount, *repo.ForksCount, *repo.OpenIssuesCount,
 				desc))
 			if err != nil {
