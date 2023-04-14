@@ -4,39 +4,40 @@ import (
 	"github.com/google/go-github/v48/github"
 	"github.com/qdriven/go-for-qa/pkg/gh"
 	funk "github.com/thoas/go-funk"
+	"sort"
+	"strconv"
 )
 
-type FeedsCollector interface {
-	Collect()
+type Collector interface {
+	Collect() map[string]*Category
 }
 
 type GithubStarredRepoCollector struct {
 	GhClient *gh.QGithub
 }
 
-func CreateGithubStarredRepoCollort() *GithubStarredRepoCollector {
+var (
+	filterKeywords = []string{"chatgpt", "ai", "automation", "low-code", "no-code", "awesome",
+		"framework"}
+	starredFilter = []int{1000, 500, 100, 50}
+)
+
+func CreateGithubStarredRepoCollector() *GithubStarredRepoCollector {
 	return &GithubStarredRepoCollector{
 		GhClient: gh.NewGithubClient(),
 	}
 }
-func (g *GithubStarredRepoCollector) Collect() {
-	repos := g.GhClient.GetAllStarredRepositories(1, 10000)
-	//convert to yaml file
-	//keywords: chatgpt/ai/automation/qa
-	filter_keywords := []string{"chatgpt", "ai", "automation", "low-code", "no-code", "awesome",
-		"framework"}
-	starred_filter := []string{"100", "50", "500", "1000"}
+func (g *GithubStarredRepoCollector) Collect() map[string]*Category {
 	cateSites := map[string]*Category{}
-
-	funk.ForEach(filter_keywords, func(word string) {
+	funk.ForEach(filterKeywords, func(word string) {
 		cateSites[word] = &Category{
 			Name:  word,
 			Sites: []*Site{},
 		}
 	})
-	funk.ForEach(starred_filter, func(word string) {
-		cateSites[word] = &Category{
-			Name:  "Github Stars:" + word,
+	funk.ForEach(starredFilter, func(star int) {
+		cateSites[strconv.Itoa(star)] = &Category{
+			Name:  "Github Stars:" + strconv.Itoa(star),
 			Sites: []*Site{},
 		}
 	})
@@ -44,7 +45,7 @@ func (g *GithubStarredRepoCollector) Collect() {
 		Name:  "其他",
 		Sites: []*Site{},
 	}
-
+	repos := g.GhClient.GetAllStarredRepositories(0, 60)
 	funk.ForEach(repos, func(repo *github.StarredRepository) {
 		site := &Site{
 			Name:        *repo.Repository.Name,
@@ -52,17 +53,26 @@ func (g *GithubStarredRepoCollector) Collect() {
 			URL:         *repo.Repository.HTMLURL,
 			Icon:        *repo.Repository.HTMLURL,
 		}
-		funk.ForEach(filter_keywords, func(word string) {
+		funk.ForEach(filterKeywords, func(word string) {
 			if funk.Contains(word, repo.Repository.Topics) {
 				cateSites[word].Sites = append(cateSites[word].Sites, site)
 			} else {
 				cateSites["others"].Sites = append(cateSites[word].Sites, site)
 			}
 		})
-		//TODO: add to stars
-		funk.ForEach(starred_filter, func(stars string) {
-			repo.Repository.GetStargazersCount()
-		})
+		starCount := repo.Repository.GetStargazersCount()
+		category := getStartCountCategory(starCount, cateSites)
+		category.Sites = append(category.Sites, site)
 	})
+	return cateSites
+}
 
+func getStartCountCategory(starCount int, cateSite map[string]*Category) *Category {
+	sort.Ints(starredFilter)
+	for i := 0; i < len(starredFilter); i++ {
+		if starCount > starredFilter[i] {
+			return cateSite[strconv.Itoa(starCount)]
+		}
+	}
+	return cateSite[strconv.Itoa(starredFilter[len(starredFilter)-1])]
 }
