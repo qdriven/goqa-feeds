@@ -31,6 +31,7 @@ func (ws *WebStackGenerator) Run(cfg *feeds.Config, writer io.Writer) {
 	if err := tmpl.Execute(writer, cfg); err != nil {
 		log.Fatal("[webstack] Render template error: ", err.Error())
 	}
+
 }
 
 type searchEngineInfo struct {
